@@ -56,46 +56,69 @@ Purpose:  This project will show you the difference between member functions and
 #include <string>
 struct T
 {
-    T(<#type name#> v, const char* <#variable name#>)   //1
-    //2
-    //3
+    T(int v, const char* let) : 
+    value(v),
+    name(let)
+    {} //1
+    int value;//2
+    std::string name;//3
 };
 
-struct <#structName1#>                                //4
+struct Judge                                //4
 {
-    <#type name#> compare(<#type name#> a, <#type name#> b) //5
+    T* compare(T* a, T* b) //5
     {
-        if( a->value < b->value ) return a;
-        if( a->value > b->value ) return b;
+        if ( a != nullptr && b != nullptr)
+        {
+            if( a->value < b->value ) return a;
+            if( a->value > b->value ) return b;
+        }
         return nullptr;
     }
 };
 
 struct U
 {
-    float <#name1#> { 0 }, <#name2#> { 0 };
-    <#returnType#> <#memberFunction#>(<#type name#>* <#updatedValue#>)      //12
+    float up { 0.2f }, down { 2.0f };
+    float stuff(float* updatedValue)      //12
     {
-        
+        if (updatedValue != nullptr)
+        {
+            std::cout << "U's up value: " << this->up << std::endl;
+            this->up = *updatedValue;
+            std::cout << "U's up updated value: " << this->up << std::endl;
+            while( std::abs(this->up - this->down) > 0.001f )
+            {
+                this->down += (this->up - this->down) / 100.f;
+            }
+            std::cout << "U's down updated value: " << this->up << std::endl;
+            return this->up * this->down;
+        }
+        return 0;
     }
 };
 
-struct <#structname2#>
+struct Jury
 {
-    static <#returntype#> <#staticFunctionA#>(U* that, <#type name#>* <#updatedValue#> )        //10
+    static float look(U* that, float* updatedValue )        //10
     {
-        std::cout << "U's <#name1#> value: " << that-><#name1#> << std::endl;
-        that-><#name1#> = <#updatedValue#>;
-        std::cout << "U's <#name1#> updated value: " << that-><#name1#> << std::endl;
-        while( std::abs(that-><#name2#> - that-><#name1#>) > 0.001f )
+        if ( that != nullptr && updatedValue != nullptr)
         {
-            /*
-             write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-             */
-            that-><#name2#> += ;
+            std::cout << "U's up value: " << that->up << std::endl;
+            that->up = *updatedValue;
+            std::cout << "U's up updated value: " << that->up << std::endl;
+            while( std::abs(that->up - that->down) > 0.001f )
+            {
+                /*
+                 write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+                 */
+                that->down += (that->up - that->down) / 100.f;
+            }
+            std::cout << "U's down updated value: " << that->up << std::endl;
+            return that->up * that->down;
         }
-        std::cout << "U's <#name2#> updated value: " << that-><#name2#> << std::endl;
-        return that-><#name2#> * that-><#name1#>;
+        std::cout << "One or both arguments is nullptr! returning 0" << std::endl;
+        return 0;
     }
 };
         
@@ -115,19 +138,22 @@ struct <#structname2#>
 
 int main()
 {
-    T <#name1#>( , );                                             //6
-    T <#name2#>( , );                                             //6
+    T yes( 44 , "t");                                             //6
+    T no( 84 , "w");                                             //6
     
-    <#structName1#> f;                                            //7
-    auto* smaller = f.compare( , );                              //8
-    std::cout << "the smaller one is << " << smaller->name << std::endl; //9
+    Judge f;                                            //7
+    auto* smaller = f.compare( &yes, &no); 
+    if (smaller != nullptr)
+    {                             //8
+    std::cout << "the smaller one is " << smaller->name << std::endl; //9
+    }
     
-    U <#name3#>;
+    U check;
     float updatedValue = 5.f;
-    std::cout << "[static func] <#name3#>'s multiplied values: " << <#structname2#>::<#staticFunctionA#>( , ) << std::endl;                  //11
+    std::cout << "[static func] check's multiplied values: " << Jury::look( &check, &updatedValue) << std::endl;                  //11
     
-    U <#name4#>;
-    std::cout << "[member func] <#name4#>'s multiplied values: " << <#name4#>.<#memberFunction#>( &updatedValue ) << std::endl;
+    U dog;
+    std::cout << "[member func] dog's multiplied values: " << dog.stuff( &updatedValue ) << std::endl;
 }
 
         
