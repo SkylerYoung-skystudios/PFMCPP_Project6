@@ -31,13 +31,10 @@ struct T
 
 struct Judge                                //4
 {
-    T* compare(T* a, T* b) //5
+    T* compare(T& a, T& b) //5
     {
-        if ( a != nullptr && b != nullptr)
-        {
-            if( a->value < b->value ) return a;
-            if( a->value > b->value ) return b;
-        }
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         return nullptr;
     }
 };
@@ -45,45 +42,33 @@ struct Judge                                //4
 struct U
 {
     float up { 0.2f }, down { 2.0f };
-    float stuff(float* updatedValue)      //12
+    float stuff(const float& updatedValue)      //12
     {
-        if (updatedValue != nullptr)
+        std::cout << "U's up value: " << this->up << std::endl;
+        this->up = updatedValue;
+        std::cout << "U's up updated value: " << this->up << std::endl;
+        while( std::abs(this->up - this->down) > 0.001f )
         {
-            std::cout << "U's up value: " << this->up << std::endl;
-            this->up = *updatedValue;
-            std::cout << "U's up updated value: " << this->up << std::endl;
-            while( std::abs(this->up - this->down) > 0.001f )
-            {
-                this->down += (this->up - this->down) / 100.f;
-            }
-            std::cout << "U's down updated value: " << this->up << std::endl;
-            return this->up * this->down;
+            this->down += (this->up - this->down) / 100.f;
         }
-        return 0;
+        std::cout << "U's down updated value: " << this->down << std::endl;
+        return this->up * this->down;
     }
 };
 
 struct Jury
 {
-    static float look(U* that, float* updatedValue )        //10
+    static float look(U& that, const float& updatedValue )        //10
     {
-        if ( that != nullptr && updatedValue != nullptr)
+        std::cout << "U's up value: " << that.up << std::endl;
+        that.up = updatedValue;
+        std::cout << "U's up updated value: " << that.up << std::endl;
+        while( std::abs(that.up - that.down) > 0.001f )
         {
-            std::cout << "U's up value: " << that->up << std::endl;
-            that->up = *updatedValue;
-            std::cout << "U's up updated value: " << that->up << std::endl;
-            while( std::abs(that->up - that->down) > 0.001f )
-            {
-                /*
-                 write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-                 */
-                that->down += (that->up - that->down) / 100.f;
-            }
-            std::cout << "U's down updated value: " << that->up << std::endl;
-            return that->up * that->down;
+            that.down += (that.up - that.down) / 100.f;
         }
-        std::cout << "One or both arguments is nullptr! returning 0" << std::endl;
-        return 0;
+        std::cout << "U's down updated value: " << that.up << std::endl;
+        return that.up * that.down;
     }
 };
         
@@ -107,18 +92,18 @@ int main()
     T no( 84 , "w");                                             //6
     
     Judge f;                                            //7
-    auto* smaller = f.compare( &yes, &no); 
+    auto smaller = f.compare( yes, no); 
     if (smaller != nullptr)
     {                             //8
-    std::cout << "the smaller one is " << smaller->name << std::endl; FIXME indentation
+        std::cout << "the smaller one is " << smaller->name << std::endl;
     }
     
     U check;
     float updatedValue = 5.f;
-    std::cout << "[static func] check's multiplied values: " << Jury::look( &check, &updatedValue) << std::endl;                  //11
+    std::cout << "[static func] check's multiplied values: " << Jury::look( check, updatedValue) << std::endl;                  //11
     
     U dog;
-    std::cout << "[member func] dog's multiplied values: " << dog.stuff( &updatedValue ) << std::endl;
+    std::cout << "[member func] dog's multiplied values: " << dog.stuff( updatedValue ) << std::endl;
 }
 
         
